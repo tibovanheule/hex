@@ -342,7 +342,7 @@ checklist om na te gaan of je alle onderdelen hebt afgewerkt.
 - [ ] Test functionaliteit (het TEST argument)
 - [ ] Verslag
 - [ ] Alles pushen naar `master` op
-      `git@subgit.ugent.be:2019-2020/LP/project/{studentnr}`
+      `git@subgit.ugent.be:2019-2020/LP/{studentnr}`
 
 # Indienen
 
@@ -391,7 +391,7 @@ hier nog geen account op hebt, dien je deze aan te maken.
 ### Repository afhalen
 
 ```bash
-git clone git@subgit.ugent.be:2019-2020/LP/project/{studentnr} projectConTacTix
+git clone git@subgit.ugent.be:2019-2020/LP/{studentnr} projectConTacTix
 ```
 
 ### Opgave als upstream instellen
@@ -400,7 +400,7 @@ Je kunt de opgave en boilerplate voor het project afhalen door de opgave
 repository als upstream met volgende commando's in de `projectConTacTix` map:
 
 ```bash
-git remote add upstream git@subgit.UGent.be:2019-2020/LP/project-assignment
+git remote add upstream git@subgit.UGent.be:2019-2020/LP-assignment
 git pull upstream master
 ```
 
@@ -431,7 +431,7 @@ andere map
 
 ```
 cd eenAndereMap
-git clone git@subgit.ugent.be:2019-2020/LP/project/{studentnr} projectLPControle
+git clone git@subgit.ugent.be:2019-2020/LP/{studentnr} projectLPControle
 ```
 
 ## Deadlines
