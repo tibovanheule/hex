@@ -1,4 +1,4 @@
-:- module(parser, [parse/1]).
+:- module(parser, [parse/1,parseTest/2]).
 
 /** <module> Parser
 Behandelt de stream en maakt een Game-datastructur aan.
@@ -22,11 +22,18 @@ parse(_) :-
     halt(4).
 
 /**
+ * parseTest(-Arg:Game)
+ *
+ * To simplify writing unit test of the parser, we define an access method to parse an stream /= user_stream
+ */
+parseTest(Retval,S) :- phrase(gram(Retval),S).
+
+/**
  * gram(-Arg:game)
  *
  * gramatica entry point all valid parse files.
  */
-gram(Game) --> size(Size), turn(Turn), tiles(Number_of_tiles,Tiles), state(State),orientation(Or), {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
+gram(Game) --> size(Size), turn(Turn), tiles(Number_of_tiles,Tiles), state(State),orientation(Or),!, {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
 
 /**
  * verify(-Arg:number_of_tiles,-Arg:tiles)
