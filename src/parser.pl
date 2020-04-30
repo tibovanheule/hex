@@ -29,9 +29,18 @@ parse(_) :-
  */
 gram(Game) --> size(Size), turn(Turn), tiles(Number_of_tiles,Tiles), state(State),orientation(Or), {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
 
+/**
+ * verify(-Arg:number_of_tiles,-Arg:tiles)
+ *
+ * verify that a color of a player is in the orientation list.
+ */
+verify(List,tile(_,player(X))) :- member(X,List).
 
-verify(Y,tile(_,player(X))) :- member(X,Y).
-
+/**
+ * samecolor(-Arg:number_of_tiles,-Arg:tiles)
+ *
+ * for every tile in the tiles list check if it is a member of the orientation.
+ */
 samecolor(tiles(Tiles),orientation(X,Y)) :- maplist(verify([X,Y]), Tiles).
 
 /**
