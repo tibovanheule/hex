@@ -1,4 +1,15 @@
-:- module(color, [color/1]).
+/** <module> Colors
+
+Deze module bevat alle valide webkleuren, deze wordt gebruikt tijdens het parsen van de invoer.
+
+@author Tibo Vanheule
+*/
+:- module(colors, [color/1]).
+/**
+ * predicate(-Arg:String)
+ *
+ * Predicate color, string is een valid webkleur.
+ */
 color(yellow).
 color(yellowgreen).
 color(white).
