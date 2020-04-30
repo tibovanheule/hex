@@ -5,13 +5,35 @@
 @author Tibo Vanheule
 
 */
-:- use_module(library(http/http_server)).
-:- use_module(library(http/json)).
+:- use_module(library(http/thread_httpd)).
+:- use_module(library(http/http_dispatch)).
+:- use_module(library(http/http_unix_daemon)).
+:- use_module(library(http/http_files)).
 :- use_module(library(http/http_json)).
 
-:- initialization http_server([port(3022)]).
-
-:- http_handler(root(.), http_redirect(moved, location_by_id(home_page)), []).
-:- http_handler(root(home), home_page, []).
 
 home_page(_Request) :- reply_json(_{test:"hello world"}).
+
+
+
+
+:- multifile http:location/3.
+http:location(files, root(files), []).
+user:file_search_path(folders, library('images/styles/scripts')).
+
+:- http_handler(root(.), http_reply_from_files('./website', []), [prefix]).
+:- http_handler(files(.), serve_files_in_directory(folders), [prefix]).
+:- http_handler('/test', test_handler, []).
+
+test_handler(Request) :-
+  member(method(post), Request), !,
+  http_read_json_dict(Request, _{userName:NameIn}),
+  string_concat("Hello, ", NameIn, NameOut),
+  reply_json_dict(_{computedString:NameOut}).
+test_handler(Request) :-
+  member(method(post), Request), !,
+  http_read_json_dict(Request, _{userName:NameIn}),
+  string_concat("Hello, ", NameIn, NameOut),
+  reply_json_dict(_{computedString:NameOut}).
+
+:- initialization http_daemon.
