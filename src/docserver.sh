@@ -1,6 +1,6 @@
 #!/usr/bin/env swipl
 
-/** Doc server
+/** <module> Doc server
 Deze module start een documentatie server op, deze documentatie wordt opgebouwd aan de hand van structured comments..
 @author Tibo Vanheule
 */

@@ -1,6 +1,6 @@
 :- module(parser, [parse/1]).
 
-/** Parser
+/** <module> Parser
 Behandelt de stream en maakt een Game-datastructur aan.
 
 @author Tibo Vanheule
@@ -16,7 +16,6 @@ Behandelt de stream en maakt een Game-datastructur aan.
  * If it fails then we write an error and quit the program
  */
 parse(Retval) :- phrase_from_stream(gram(Retval),user_input).
-
 parse(_) :-
     set_output(user_error),
     write("Failed to parse."),

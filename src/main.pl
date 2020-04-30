@@ -1,6 +1,6 @@
 :- use_module(parser).
 
-/** Main
+/** <module> Main
 Deze module is de start entry van het project Hex.
 
 @author Tibo Vanheule

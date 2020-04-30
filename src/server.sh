@@ -1,5 +1,10 @@
 #!/usr/bin/env swipl
 
+/** <module> Server
+
+@author Tibo Vanheule
+
+*/
 :- use_module(library(http/http_server)).
 :- use_module(library(http/json)).
 :- use_module(library(http/http_json)).
