@@ -1,15 +1,22 @@
 :- use_module(parser).
+
+/** Main
+Deze module is de start entry van het project Hex.
+
+@author Tibo Vanheule
+
+*/
+
+/**
+ * main()
+ *
+ * Entry point for the program, handles arguments and calls all needed modules.
+ */
 main :-
     current_prolog_flag(argv, Argv),
     sort(Argv,ArgvSorted),
     main(ArgvSorted).
-
-% member is test
 main(Y) :- member('TEST',Y),delete(Y,'TEST',X),write(X).
-
-
-
-% hjkl
 main([]) :- parse(R), write(R).
 
 
