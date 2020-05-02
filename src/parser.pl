@@ -8,6 +8,7 @@ Behandelt de stream en maakt een Game-datastructur aan.
 */
 :- use_module(library(dcg/basics)).
 :- use_module(colors).
+:- use_module(write).
 
 /**
  * parse(-Arg:Game)
@@ -31,10 +32,36 @@ parseTest(Retval,S) :- phrase(gram(Retval),S).
 /**
  * gram(-Arg:game)
  *
- * gramatica entry point all valid parse files.
+ * gramatica entry point calls perm.
  */
-gram(Game) --> size(Size), turn(Turn), tiles(Number_of_tiles,Tiles), state(State),orientation(Or),!, {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
-gram(Game) --> orientation(Or),tiles(Number_of_tiles,Tiles),size(Size), turn(Turn), state(State),!, {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
+gram(Game) --> perm(_,_,_,_,_,_,Game).
+
+/**
+ * perm(-Arg:size,-Arg:turn,-Arg:Number_of_tiles,-Arg:tiles,-Arg:state,-Arg:orientation,-Arg:game)
+ *
+ * perm zorgt ervoor dat de gramtica door elkaar mag staan. elke permutatie van de lijnen kan zo behandeld worden.
+ */
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> size(Size),!, perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game).
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> turn(Turn),!, perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game).
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> tiles(Number_of_tiles,Tiles),!, perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game).
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> state(State),!, perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game).
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> orientation(Or),!, perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game).
+perm(Size,Turn,Number_of_tiles,Tiles,State,Or,Game) --> { error(Size,Turn,Number_of_tiles,Tiles,State,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or]}.
+
+/**
+ * error(-Arg:size,-Arg:turn,-Arg:Number_of_tiles,-Arg:tiles,-Arg:state,-Arg:orientation)
+ *
+ * Bekijkt of alles is geinitialiseerd, zoniet dan is de parsing gefaald en dient er een gepaste foutcode gegeven te worden.
+ * controleerd ook de kleuren van de tiles en orienttie.
+ */
+error(Size,_,_,_,_,_) :- var(Size), write_error("Failed to parse size.").
+error(_,Turn,_,_,_,_) :- var(Turn), write_error("Failed to parse turn.").
+error(_,_,Number_of_tiles,_,_,_) :- var(Number_of_tiles), write_error("Failed to parse Number_of_tiles.").
+error(_,_,_,Tiles,_,_) :- var(Tiles), write_error("Failed to parse Tiles.").
+error(_,_,_,_,State,_) :- var(State), write_error("Failed to parse State.").
+error(_,_,_,_,_,Or) :- var(Or), write_error("Failed to parse Orientation.").
+error(_,_,_,Tiles,_,Or) :- \+ same_color(Tiles,Or), write_error("Found color in tiles not in orientation.").
+error(_,_,_,_,_,_) :- true. % geen error
 
 /**
  * verify(-Arg:number_of_tiles,-Arg:tiles)
@@ -48,7 +75,7 @@ verify(List,tile(_,player(X))) :- member(X,List).
  *
  * for every tile in the tiles list check if it is a member of the orientation.
  */
-samecolor(tiles(Tiles),orientation(X,Y)) :- maplist(verify([X,Y]), Tiles).
+same_color(tiles(Tiles),orientation(X,Y)) :- maplist(verify([X,Y]), Tiles).
 
 /**
  * tiles(-Arg:number_of_tiles,-Arg:tiles)
@@ -78,7 +105,9 @@ tile(N,Tiles) -->
     b,
     nonblanks(P),
     b,
-    { N2 is N - 1, atom_codes(Player,P), color(Player),!},
+    { N2 is N - 1, atom_codes(Player,P), (
+        \+ color(Player),string_concat("Unkown color: ", Player, Out),write_error(Out);true
+    ),!},
     tile(N2,L),
     {
       atom_codes(Kol,[X]),

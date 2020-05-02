@@ -39,7 +39,7 @@ get_total_number_of_tiles(Num) :- get_size(size(X,Y)), Num is X * Y.
  *
  * Check wether a player has won the game
  */
-is_won(Board,Out) :- Out = "undecided".
+is_won(_,Out) :- Out = "undecided".
 
 map_to_letter(Xi,X) :- char_code('A',Base), N is Base + Xi, char_code(X,N).
 
