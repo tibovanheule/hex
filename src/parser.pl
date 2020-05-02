@@ -34,6 +34,7 @@ parseTest(Retval,S) :- phrase(gram(Retval),S).
  * gramatica entry point all valid parse files.
  */
 gram(Game) --> size(Size), turn(Turn), tiles(Number_of_tiles,Tiles), state(State),orientation(Or),!, {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
+gram(Game) --> orientation(Or),tiles(Number_of_tiles,Tiles),size(Size), turn(Turn), state(State),!, {samecolor(Tiles,Or), Game =.. [game,Size,Turn,Number_of_tiles,Tiles,State,Or] }.
 
 /**
  * verify(-Arg:number_of_tiles,-Arg:tiles)

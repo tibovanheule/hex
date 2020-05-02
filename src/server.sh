@@ -11,15 +11,9 @@
 :- use_module(library(http/http_files)).
 :- use_module(library(http/http_json)).
 
-
-home_page(_Request) :- reply_json(_{test:"hello world"}).
-
-
-
-
 :- multifile http:location/3.
 http:location(files, root(files), []).
-user:file_search_path(folders, library('images/styles/scripts')).
+user:file_search_path(folders, library('/website')).
 
 :- http_handler(root(.), http_reply_from_files('./website', []), [prefix]).
 :- http_handler(files(.), serve_files_in_directory(folders), [prefix]).
