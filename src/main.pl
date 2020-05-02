@@ -1,5 +1,6 @@
 :- use_module(parser).
-
+:- use_module(test).
+:- use_module(game).
 /** <module> Main
 Deze module is de start entry van het project Hex.
 
@@ -16,9 +17,10 @@ main :-
     current_prolog_flag(argv, Argv),
     sort(Argv,ArgvSorted),
     main(ArgvSorted).
-main(Y) :- member('TEST',Y),delete(Y,'TEST',X),write(X).
-main([]) :- parse(R), write(R).
-
+main(Y) :- member('TEST',Y),member('SVG',Y),!,parse(R),asserta(R),get_tiles(T),get_size(S),free(T,S,L),write(L).
+main(Y) :- member('TEST',Y),!,parse(R),asserta(R),test(R).
+main(Y) :- member('SVG',Y),!,parse(R),asserta(R),get_tiles(T),get_size(S),free(T,S,L),write(L).
+main(_) :- parse(R),asserta(R), write(R).
 
 % wat doet read_string(user_input,"\n","\r",End,Codes) ?
 %-------------------
