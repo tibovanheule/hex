@@ -5,21 +5,22 @@
 @author Tibo Vanheule
 
 */
+
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
+:- use_module(library(http/http_error)).
 :- use_module(library(http/http_unix_daemon)).
 :- use_module(library(http/http_files)).
 :- use_module(library(http/http_json)).
+:- use_module(library(http/html_write)).
 
 
-home_page(_Request) :- reply_json(_{test:"hello world"}).
-
-
-
+:- initialization(http_daemon, main).
 
 :- multifile http:location/3.
+:- dynamic   http:location/3.
 http:location(files, root(files), []).
-user:file_search_path(folders, library('images/styles/scripts')).
+user:file_search_path(folders,'/hex/src/website/').
 
 :- http_handler(root(.), http_reply_from_files('./website', []), [prefix]).
 :- http_handler(files(.), serve_files_in_directory(folders), [prefix]).
@@ -27,13 +28,13 @@ user:file_search_path(folders, library('images/styles/scripts')).
 
 test_handler(Request) :-
   member(method(post), Request), !,
+  write(Request),
   http_read_json_dict(Request, _{userName:NameIn}),
   string_concat("Hello, ", NameIn, NameOut),
   reply_json_dict(_{computedString:NameOut}).
 test_handler(Request) :-
-  member(method(post), Request), !,
-  http_read_json_dict(Request, _{userName:NameIn}),
-  string_concat("Hello, ", NameIn, NameOut),
-  reply_json_dict(_{computedString:NameOut}).
+  \+ member(method(post), Request), !,
+  reply_json_dict(_{error:true,message:"hello mister, you forgot to post your gameboard"}).
+
 
 :- initialization http_daemon.
