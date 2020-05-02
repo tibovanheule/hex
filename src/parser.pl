@@ -70,7 +70,7 @@ tile(0,_) --> [].
 tile(N,Tiles) -->
     b,
     "(",
-    string(X),
+    nonblank(X), integer(Y),
     ")",
     b,
     "->",
@@ -80,8 +80,11 @@ tile(N,Tiles) -->
     { N2 is N - 1, atom_codes(Player,P), color(Player),!},
     tile(N2,L),
     {
-      atom_codes(Tile,X),
-      append([tile(Tile,player(Player))],L,Tiles)
+      atom_codes(Kol,[X]),
+      char_code('A',Base),
+      atom_codes(Kol,Val),
+      Koli is Val - Base + 1,
+      append([tile(coordinate(Koli/Y),player(Player))],L,Tiles)
      }.
 
 /**
