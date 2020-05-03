@@ -87,6 +87,7 @@ tiles(Size,T) -->
      b,
      integer(S),
      tile(S,Tiles),
+     b,
      {Size =.. [number_of_tiles,S], T =.. [tiles,Tiles] }.
 
 /**
@@ -94,9 +95,8 @@ tiles(Size,T) -->
  *
  * Predicate orientation, gramtica regel voor de tegels de parsen
  */
-tile(0,_) --> [].
-tile(N,Tiles) -->
-    b,
+tile(0,L) --> {L = []}.
+tile(N,Tiles) -->    b,
     "(",
     nonblank(X), integer(Y),
     ")",
@@ -105,10 +105,8 @@ tile(N,Tiles) -->
     b,
     nonblanks(P),
     b,
-    { N2 is N - 1, atom_codes(Player,P), (
-        \+ color(Player),string_concat("Unkown color: ", Player, Out),write_error(Out);true
-    ),!},
-    tile(N2,L),
+    { N2 is N - 1, atom_codes(Player,P),color_valid(Player),!},
+    tile(N2,L),b,
     {
       atom_codes(Kol,[X]),
       char_code('A',Base),
@@ -117,12 +115,20 @@ tile(N,Tiles) -->
       append([tile(coordinate(Koli/Y),player(Player))],L,Tiles)
      }.
 
+ /**
+  * color_valid(-Arg:color)
+  *
+  * Checks if a color exists, print an error and quit otherwise.
+  */
+color_valid(Player) :- \+ color(Player), string_concat("Unkown color: ", Player, Out),write_error(Out).
+color_valid(_) :- true.
+
 /**
  * turn(-Arg:turn)
  *
  * Predicate turn, gramtica regel voor de beurt van een speler te parsen.
  */
-turn(Turn) --> "turn:",b,nonblanks(P),b, { atom_codes(Player,P), color(Player), Turn =.. [turn|[Player]] }.
+turn(Turn) --> "turn:",b,nonblanks(P),b, { atom_codes(Player,P), color_valid(Player), Turn =.. [turn|[Player]] }.
 
 /**
  * size(-Arg:size)
@@ -138,7 +144,7 @@ size(S) --> "size:",b, integer(Heigth), " * ", integer(Width), b, { S =.. [size|
  * Predicate state, gramtica regel voor de state van een spel te parsen.
  */
 state(S) --> "state:",b, "undecided",b, { S =.. [state,undecided] }.
-state(S) --> "state:",b, "won",b,"by",b,nonblanks(X),b, {atom_codes(State,X),color(State), S =.. [state,State] }.
+state(S) --> "state:",b, "won",b,"by",b,nonblanks(X),b, {atom_codes(State,X), color_valid(State), S =.. [state,State] }.
 
 
 /**
@@ -146,7 +152,7 @@ state(S) --> "state:",b, "won",b,"by",b,nonblanks(X),b, {atom_codes(State,X),col
  *
  * Predicate orientation, gramtica regel voor de orientatie van een spel te parsen.
  */
-orientation(S) --> "orientation:",b, nonblanks(H),b, "*",b, nonblanks(V), b, { atom_codes(Hor,H),atom_codes(Ver,V), S =.. [orientation,Hor,Ver] }.
+orientation(Or) --> "orientation:",b, nonblanks(H),b, "*",b, nonblanks(V), b, { atom_codes(Hor,H),atom_codes(Ver,V),color_valid(Hor),color_valid(Ver), Or =.. [orientation,Hor,Ver]}.
 
 /**
  * b
