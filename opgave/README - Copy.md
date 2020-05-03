@@ -7,48 +7,8 @@ functionaliteit te voorzien.
   - [DONE] color name check
   - levels
 
-![img](hex-1.svg)
-
 # ## Bord voorstelling
-```yaml
-size: 11 * 11
-turn: red
-tiles: 32
-    (B1) -> red
-    (A6) -> blue
-    (D4) -> red
-    (B2) -> red
-    (B3) -> red
-    (B8) -> blue
-    (B6) -> blue
-    (E6) -> blue
-    (C4) -> red
-    (C8) -> blue
-    (B7) -> blue
-    (D7) -> blue
-    (C5) -> red
-    (D5) -> red
-    (C3) -> red
-    (D6) -> red
-    (E7) -> red
-    (G9) -> red
-    (F5) -> blue
-    (I7) -> blue
-    (H4) -> blue
-    (E11) -> red
-    (K6) -> blue
-    (F7) -> red
-    (I6) -> blue
-    (G4) -> blue
-    (G7) -> red
-    (F10) -> red
-    (G8) -> red
-    (J7) -> blue
-    (I4) -> blue
-    (I5) -> blue
-state: won by blue
-orientation: red * blue
-```
+
 ### Je moet een foutboodschap uitschrijven!
 Een bord kan ongeldig zijn als:
 
@@ -160,39 +120,17 @@ cat invoerFile | swipl -f none -t halt -g main -q main.pl TEST SVG
 cat inputFile | swipl -f none -t halt -g main -q main.pl SVG TEST
 ```
 
-# Niet functionele eisen
-
-Naast de basisfunctionaliteit zijn er enkele niet functionele eisen waar je
-project aan moet voldoen. Deze niet functionele eisen zijn even belangrijk als
-de functionele eisen van het project.
-
-- De code moet **goed gedocumenteerd** zijn, er moet commentaar geschreven zijn
-  bij elke (logische) regel.
+- goed gedocumenteerd
 - Je code moet **getest** zijn, dit wil zeggen dat je voor elk van de bewegingen
   zelf een test schrijft, zodat je zeker bent dat de basis functionaliteit
   werkt.
-- Je code moet opgesplitst worden in logische modules.
+- modules.
 - Schrijf je code zo dat algemene functionaliteit makkelijk kan hergebruikt
   worden.
-- Je Con-tac-tix computer moet gebaseerd zijn op een variant van **min-max
-  bomen** (alpha-bèta snoeien). We laten uitzonderingen toe op deze regel in
-  onderling overleg met de assistent van het vak.
-- Het spel moet testbaar zijn met de voorziene code op Ufora (volgt later).
-  Projecten die niet testbaar zijn met deze automatische test zullen **automatisch**
-  **als onontvankelijk verklaard** worden.
-
-# Verslag
-
 - Inleiding
 - Interne bord voorstelling
 - Algoritme (met kort voorbeeld)
 - Conclusie (wat heb je gerealiseerd en wat beter kan)
-
-# Checklist
-
-Je project is veel meer dan alleen maar de code van de AI, hieronder een
-checklist om na te gaan of je alle onderdelen hebt afgewerkt.
-
 - [ ] Con-tac-tix implementatie
 - [ ] Code documentatie pldoc
 - [ ] Testcode (bijvoorbeeld PlUnit)

@@ -1,10 +1,12 @@
-:- module(game,[get_tiles/1,get_size/1,get_number_of_tiles/1,map_to_letter/2,free/3,get_total_number_of_tiles/1,is_won/2]).
+:- module(game,[get_tiles/1,get_size/1,get_number_of_tiles/1,map_to_letter/2,free/3,get_total_number_of_tiles/1,is_won/2,update_board/3]).
 /** <module> Main
 Deze module bevat het game board datastructuur en bijhorende operaties erop.
 
 @author Tibo Vanheule
 
 */
+
+:- use_module(library(lists)).
 
 /**
  * get_tiles(-Arg:game,-Arg:List)
@@ -39,8 +41,29 @@ get_total_number_of_tiles(Num) :- get_size(size(X,Y)), Num is X * Y.
  *
  * Check wether a player has won the game
  */
-is_won(_,Out) :- Out = "undecided".
+is_won(_,Out) :- Out =.. [state,undecided].
 
+/**
+ * map_to_letter(-Arg:Int,-Arg:letter)
+ *
+ * convert a number (representing a collum) to a letter
+ */
 map_to_letter(Xi,X) :- char_code('A',Base), N is Base + Xi, char_code(X,N).
 
-free(B,size(X2,Y2),L) :- findall(X/Y, (between(1, X2, X), between(1, Y2, Y),\+ member(tile(coordinate(X/Y),_),B)), L).
+/**
+ * free(-Arg:game,-Arg:size,-Arg:List)
+ *
+ * Get all possible moves, sorted
+ */
+free(B,size(X2,Y2),L) :- setof(X/Y, (between(1, X2, X), between(1, Y2, Y),\+ member(tile(coordinate(X/Y),_),B)), L).
+free(_,_,L) :- L = [].
+
+
+update_board(game(S,turn(Turn),number_of_tiles(N),tiles(Tiles),_,Or),Move,NewBoard) :- Num is N + 1,append([tile(coordinate(Move),player(Turn))],Tiles,NewTiles),is_won(NewTiles,NewState), toggle_turn(Turn,NewTurn,Or), NewBoard =.. [game,S,NewTurn,number_of_tiles(Num),tiles(NewTiles),NewState,Or].
+
+toggle_turn(Turn,NewTurn,orientation(X,Y)) :- Turn == X, NewTurn =.. [turn,Y].
+toggle_turn(Turn,NewTurn,orientation(X,Y)) :- Turn == Y, NewTurn =.. [turn,X].
+
+score([],0).
+
+take_move(0/0,0).
