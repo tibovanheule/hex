@@ -9,5 +9,6 @@ SyslogIdentifier=hex
 ExecStart=/hex/src/server.sh --port=3022 --workers=1 --user=hex --no-fork
 WorkingDirectory=/hex/src/
 
+
 [Install]
 WantedBy=multi-user.target

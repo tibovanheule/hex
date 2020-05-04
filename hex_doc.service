@@ -9,7 +9,6 @@ StandardError=syslog
 SyslogIdentifier=hex_doc
 ExecStart=/hex/src/docserver.sh
 WorkingDirectory=/hex/src/
-User=hex
 
 [Install]
 WantedBy=multi-user.target
