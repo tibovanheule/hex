@@ -13,7 +13,8 @@
 :- use_module(library(http/http_files)).
 :- use_module(library(http/http_json)).
 :- use_module(library(http/html_write)).
-
+:- use_module(library(http/http_client)).
+:- use_module(parser).
 
 :- initialization(http_daemon, main).
 
@@ -24,14 +25,14 @@ user:file_search_path(folders,'/hex/src/website/').
 
 :- http_handler(root(.), http_reply_from_files('./website', []), [prefix]).
 :- http_handler(files(.), serve_files_in_directory(folders), [prefix]).
-:- http_handler('/test', test_handler, []).
+:- http_handler('/move', test_handler, []).
 
 test_handler(Request) :-
   member(method(post), Request), !,
-  write(Request),
-  http_read_json_dict(Request, _{userName:NameIn}),
-  string_concat("Hello, ", NameIn, NameOut),
-  reply_json_dict(_{computedString:NameOut}).
+  http_read_data(Request, Data, []),
+  open_string(Data,Stream),
+  parse_server(Stream,Ret),
+  reply_json_dict(_{computedString:Ret}).
 test_handler(Request) :-
   \+ member(method(post), Request), !,
   reply_json_dict(_{error:true,message:"hello mister, you forgot to post your gameboard"}).

@@ -1,4 +1,4 @@
-:- module(parser, [parse/1,parseTest/2]).
+:- module(parser, [parse/1,parseTest/2,parse_server/2]).
 
 /** <module> Parser
 Behandelt de stream en maakt een Game-datastructur aan.
@@ -21,6 +21,9 @@ parse(_) :-
     set_output(user_error),
     write("Failed to parse."),
     halt(4).
+
+parse_server(Stream,Retval) :- phrase_from_stream(gram(Retval), Stream).
+parse_server(_,Retval) :- Retval = "Failed to parse.",!.
 
 /**
  * parseTest(-Arg:Game)
