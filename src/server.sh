@@ -15,6 +15,7 @@
 :- use_module(library(http/html_write)).
 :- use_module(library(http/http_client)).
 :- use_module(parser).
+:- use_module(write).
 
 :- initialization(http_daemon, main).
 

@@ -1,6 +1,8 @@
-:- module(write,[test_write_board/1,write_error/1,write_svg/2]).
+:- module(write,[test_write_board/1,write_error/1,write_svg/2,json_write_board/2]).
 
 :- use_module(library(http/http_json)).
+:- use_module(library(http/json_convert)).
+:- use_module(game).
 /** <module> Write
 This module wil print a board, test, svg ...
 
@@ -50,4 +52,10 @@ write_svg(Board,Out) :- format(atom(Out),'<svg width="500" height="300" viewbox=
     </g>
 </svg>',[]).
 
-json_write_board(game(size(X,Y),turn(Turn),number_of_tiles(N),tiles(Tiles),state(State),orientation(P1,P2)), Json) = Json = _{width:X,height:Y,turn:Turn,number_of_tiles:N,moves:Tiles,state:State,player_x:P1,player_y:P2}
+
+
+
+json_write_board(game(size(X,Y),turn(Turn),number_of_tiles(N),tiles(Tiles),state(State),orientation(P1,P2)), Json) :- tiles_to_json(Tiles,Tjson), Json = _{width:X,height:Y,turn:Turn,number_of_tiles:N,moves:Tjson,state:State,player_x:P1,player_y:P2}.
+
+tiles_to_json([tile(coordinate(Xi/Y),player(P))],Json) :- map_to_letter(Xi,X), Json = [_{xi:Xi,x:X,y:Y,player:P}].
+tiles_to_json([tile(coordinate(Xi/Y),player(P))|L],Json) :- map_to_letter(Xi,X), tiles_to_json(L,List), append([_{xi:Xi,x:X,y:Y,player:P}],List,Json).
