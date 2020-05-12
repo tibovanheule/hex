@@ -48,14 +48,14 @@ is_won(_,Out) :- Out =.. [state,undecided].
  *
  * convert a number (representing a collum) to a letter
  */
-map_to_letter(Xi,X) :- char_code('A',Base), N is Base + Xi, char_code(X,N).
+map_to_letter(Xi,X) :- char_code('A',Base), N is Base + Xi - 1, char_code(X,N).
 
 /**
  * free(-Arg:game,-Arg:size,-Arg:List)
  *
  * Get all possible moves, sorted
  */
-free(B,size(X2,Y2),L) :- setof(X/Y, (between(1, X2, X), between(1, Y2, Y),\+ member(tile(coordinate(X/Y),_),B)), L).
+free(B,size(X2,Y2),L) :-  setof(X/Y, (between(1, X2, X), between(1, Y2, Y),\+ member(tile(coordinate(X/Y),_),B)), L).
 free(_,_,L) :- L = [].
 
 
