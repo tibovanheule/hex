@@ -50,4 +50,4 @@ write_svg(Board,Out) :- format(atom(Out),'<svg width="500" height="300" viewbox=
     </g>
 </svg>',[]).
 
-json_write_board(game(size(X,Y),turn(Turn),number_of_tiles(N),tiles(Tiles),state(State),orientation(P1,P2)))
+json_write_board(game(size(X,Y),turn(Turn),number_of_tiles(N),tiles(Tiles),state(State),orientation(P1,P2)), Json) = Json = _{width:X,height:Y,turn:Turn,number_of_tiles:N,moves:Tiles,state:State,player_x:P1,player_y:P2}

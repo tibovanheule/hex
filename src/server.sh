@@ -30,9 +30,10 @@ user:file_search_path(folders,'/hex/src/website/').
 test_handler(Request) :-
   member(method(post), Request), !,
   http_read_data(Request, Data, []),
-  open_string(Data,Stream),
-  parse_server(Stream,Ret),
-  reply_json_dict(_{computedString:Ret}).
+  open_string(Data, Stream),
+  parse_server(Stream, Game),
+  json_write_board(Game, Json),
+  reply_json_dict(Json).
 test_handler(Request) :-
   \+ member(method(post), Request), !,
   reply_json_dict(_{error:true,message:"hello mister, you forgot to post your gameboard"}).
