@@ -114,7 +114,7 @@ tile(N,Tiles) -->    b,
       atom_codes(Kol,[X]),
       char_code('A',Base),
       atom_codes(Kol,Val),
-      Koli is Val - Base + 1,
+      Koli is Val - Base,
       append([tile(coordinate(Koli/Y),player(Player))],L,Tiles)
      }.
 

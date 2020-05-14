@@ -1,14 +1,14 @@
 :- module(write,[test_write_board/1,write_error/1,write_svg/2,json_write_board/2]).
 
-:- use_module(library(http/http_json)).
-:- use_module(library(http/json_convert)).
-:- use_module(game).
 /** <module> Write
 This module wil print a board, test, svg ...
 
 @author Tibo Vanheule
 
 */
+:- use_module(library(http/http_json)).
+:- use_module(library(http/json_convert)).
+:- use_module(game).
 
 test_write_board(game(size(X,Y),turn(Turn),number_of_tiles(N),tiles(Tiles),state(State),orientation(P1,P2))) :-
     format(atom(Out), 'state: ~s~n\c
@@ -26,7 +26,7 @@ write_tile([tile(coordinate(Xi/Y),player(P))|L]) :- map_to_letter(Xi,X),format(a
 write_error(X) :- set_output(user_error),write(X),halt(4).
 
 
-write_svg(Board,Out) :- format(atom(Out),'<svg width="500" height="300" viewbox="0 0 30.3108891323 17.5" xmlns="http://www.w3.org/2000/svg">
+write_svg(game(size(X,Y),turn(_),number_of_tiles(_),tiles(Tiles),state(_),orientation(P1,P2)),Out) :- Xm1 is X -1, Ym1 is Y -1, format(atom(Begin),'<svg width="500" height="300" viewbox="0 0 30.3108891323 17.5" xmlns="http://www.w3.org/2000/svg">
 
   <defs>
     <style>
@@ -49,8 +49,44 @@ write_svg(Board,Out) :- format(atom(Out),'<svg width="500" height="300" viewbox=
    </defs>
 
     <g transform="matrix(1.73205080756 0 0.86602540378 1.5 3.46410161512 2.5)">
+    <!--Player names and sidebars-->
+    <g>
+        <text text-anchor="start" fill="~s" font-size="0.5" y="-1.1" x="-0.5">Player 1</text>
+        <polygon fill="~s" points="-1,-1 0,0 ~d,0 ~d,-1"></polygon>
+        <polygon fill="~s" points="-1,~d 0,~d ~d,~d ~d,~d"></polygon>
+        <text text-anchor="start" fill="~s" font-size="0.5" transform="rotate(90)" y="-~d.1" x="-0.5">Player 2</text>
+        <polygon fill="~s" points="-1,-1 0,0 0,~d -1,~d"></polygon>
+        <polygon fill="~s" points="~d,-1 ~d,0 ~d,~d ~d,~d"></polygon>
     </g>
-</svg>',[]).
+    <!--Row and col numberings-->
+    ',[P1,P1,Xm1,X,P1,Y,Ym1,Xm1,Ym1,X,Y,P2,X,P2,Ym1,Y,P2,X,Xm1,Xm1,Ym1,X,Y]),
+svg_row(Ym1,Rows),
+string_concat(Begin, Rows, T),
+svg_col(Xm1,Cols),
+string_concat(T, Cols, T2),
+svg_tile_col(Xm1,Ym1,Tiles,T3),
+string_concat(T2,T3,T4),
+string_concat(T4,'</g>\n</svg>',Out).
+
+:- debug.
+svg_row(0,Out) :- Out = '\t<text class="row_or_col" x="-0.95" y="0">0</text>\n'.
+svg_row(Y,Out) :- format(atom(Now),'\t<text class="row_or_col" x="-0.95" y="~d">~d</text>\n',[Y,Y]), Ym1 is Y -1, svg_row(Ym1,Rest), string_concat(Rest,Now,Out).
+
+svg_col(0,Out) :- Out = '\t<text class="row_or_col" y="-0.65" x="0">A</text>\n'.
+svg_col(Y,Out) :- Yascii is Y + 65, char_code(Yletter,Yascii), format(atom(Now),'\t<text class="row_or_col" y="-0.65" x="~d">~s</text>\n',[Y,Yletter]), Ym1 is Y -1, svg_col(Ym1,Rest), string_concat(Rest,Now,Out).
+
+svg_tile_col(0,Y,Tiles,Out) :- svg_tile_row(0,Y,Tiles,Out).
+svg_tile_col(X,Y,Tiles,Out) :- Xm1 is X - 1,svg_tile_row(X,Y,Tiles,B), svg_tile_col(Xm1,Y,Tiles,T), string_concat(B,T,Out).
+
+%svg_tile_row(X,Y,Tiles,Out) :- Out = "TEST".
+svg_tile_row(X,0,Tiles,Out) :- \+ member(tile(coordinate(X/0),_),Tiles), format(atom(Out),'<use href="#tile" x="~d" y="~d"></use>',[X,0]).
+svg_tile_row(X,Y,Tiles,Out) :- \+ member(tile(coordinate(X/Y),_),Tiles), Ym1 is Y - 1 ,format(atom(B),'<use href="#tile" x="~d" y="~d"></use>',[X,Y]), svg_tile_row(X,Ym1,Tiles,T), string_concat(B,T,Out).
+svg_tile_row(X,0,Tiles,Out) :- member(tile(coordinate(X/0),player(P)),Tiles), format(atom(Out),'<use href="#tile" x="~d" y="~d" fill="~s"></use>',[X,0,P]).
+svg_tile_row(X,Y,Tiles,Out) :- member(tile(coordinate(X/Y),player(P)),Tiles), Ym1 is Y - 1 ,format(atom(B),'<use href="#tile" x="~d" y="~d" fill="~s"></use>',[X,Y,P]), svg_tile_row(X,Ym1,Tiles,T), string_concat(B,T,Out).
+
+
+
+
 
 
 
