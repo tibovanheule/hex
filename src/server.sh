@@ -53,8 +53,8 @@ svg_handler(Request) :-
   asserta(GameBoard),
   bestmove(GameBoard,3,Move),
   update_board(GameBoard,Move,NewBoard),
-  write_svg(NewBoard,0),
-  format('Content-type: image/svg+xml~n~n', []).
+  format('Content-type: image/svg+xml~n~n', []),
+  write_svg(NewBoard,0).
 svg_handler(Request) :-
   \+ member(method(post), Request), !,
   reply_json_dict(_{error:true,message:"hello mister, you forgot to post your gameboard"}).
