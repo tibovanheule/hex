@@ -35,9 +35,9 @@ move_handler(Request) :-
   member(method(post), Request), !,
   http_read_data(Request, Data, []),
   open_string(Data, Stream),
-  parse_server(Stream, Game),
-  bestmove(Game,3,Move),
-  update_board(Game,Move,NewBoard),
+  parse_server(Stream, GameBoard),
+  bestmove(GameBoard,3,Move),
+  update_board(GameBoard,Move,NewBoard),
   json_write_board(NewBoard, Json),
   reply_json_dict(Json).
 move_handler(Request) :-
@@ -48,12 +48,11 @@ svg_handler(Request) :-
   member(method(post), Request), !,
   http_read_data(Request, Data, []),
   open_string(Data, Stream),
-  parse_server(Stream, Game),
-  bestmove(Game,3,Move),
-  update_board(Game,Move,NewBoard),
-  write_svg(Game, Svg),
-  format('Content-type: image/svg+xml~n~n', []),
-  write(Svg).
+  parse_server(Stream, GameBoard),
+  bestmove(GameBoard,3,Move),
+  update_board(GameBoard,Move,NewBoard),
+  write_svg(NewBoard),
+  format('Content-type: image/svg+xml~n~n', []).
 svg_handler(Request) :-
   \+ member(method(post), Request), !,
   reply_json_dict(_{error:true,message:"hello mister, you forgot to post your gameboard"}).
