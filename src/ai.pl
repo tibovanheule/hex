@@ -15,10 +15,9 @@ Zoekt de beste mogelijke zet voor een gegeven bord
  *
  * berkent een score voor een nieuw bord.
  */
-calculate_score(Tiles,Score) :- get_size(size(W,H)),get_turn(turn(T)),get_orientation(orientation(P1,_)), P1 == T, Sp1 is H + 1, numlist(0,W,L1), get_player_score(L1,P1,Sp1,0/(-1),H,Tiles, Score).
-calculate_score(Tiles,Score) :- get_size(size(W,H)),get_turn(turn(T)),get_orientation(orientation(_,P2)), P2 == T, Sp2 is W+1, numlist(0,H,L2), get_player_score(L2,P2,Sp2,(-1)/0,W,Tiles, Score).
+calculate_score(Tiles,Score) :- get_size(size(W,_)),get_turn(turn(T)),get_orientation(orientation(P1,_)), P1 == T, Sp1 is W + 1, get_dist(Sp1/Sp1,0/(-1),Tiles,Score,P1,true,Sp1).
+calculate_score(Tiles,Score) :- get_size(size(_,H)),get_turn(turn(T)),get_orientation(orientation(_,P2)), P2 == T, Sp1 is H + 1, get_dist(Sp1/Sp1,0/(-1),Tiles,Score,P2,false,Sp1).
 
-get_player_score(L,P,Sp1,To,Dir,Tiles,Score) :- convlist([X,Dist]>>(get_dist(X/Sp1,To,Tiles,Dist,P,true,Dir)),L,O), min_list(O,Score).
 
 :- dynamic score/2.
 score([],0).

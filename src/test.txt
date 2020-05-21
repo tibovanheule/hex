@@ -1,17 +1,9 @@
-tiles: 12
-          (B3) -> lime
-          (A3) -> lime
-          (C3) -> lime
-          (D4) -> SandyBrown
-          (E3) -> lime
-          (D5) -> SandyBrown
-          (F1) -> SandyBrown
-          (F3) -> lime
-          (I2) -> lime
-          (E2) -> SandyBrown
-          (H2) -> lime
-          (J2) -> lime
-      orientation: SandyBrown * lime
-      turn: lime
-      size: 10 * 5
-      state: undecided
+orientation: red * blue
+tiles: 4
+    (A2) -> red
+    (B2) -> blue
+    (A1) -> red
+    (C2) -> blue
+size: 3 * 3
+turn: red
+state: undecided

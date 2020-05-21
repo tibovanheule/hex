@@ -48,8 +48,8 @@ get_total_number_of_tiles(Num) :- get_size(size(X,Y)), Num is X * Y.
  *
  * Check wether a player has won the game
  */
-is_won(Tiles,size(W,H),orientation(P1,_),Out) :- numlist(0,W,L),Sp1 is H+1,convlist([X,Dist]>>(get_dist(X/Sp1,0/(-1),Tiles,Dist,P1,true,H)),L,O), member(0,O), string_concat("won by ",P1,State),Out =.. [state,State].
-is_won(Tiles,size(W,H),orientation(_,P2),Out) :- numlist(0,H,L),Sp1 is W+1,convlist([X,Dist]>>(get_dist(X/Sp1,(-1)/0,Tiles,Dist,P2,true,W)),L,O), member(0,O), string_concat("won by ",P2,State),Out =.. [state,State].
+is_won(Tiles,size(W,_),orientation(P1,_),Out) :- Sp1 is W + 1,get_dist(Sp1/Sp1,0/(-1),Tiles,Dist,P1,true,Sp1),Dist @=< 0, string_concat("won by ",P1,State),Out =.. [state,State].
+is_won(Tiles,size(_,H),orientation(_,P2),Out) :- Sp1 is H + 1,get_dist(Sp1/Sp1,(-1)/0,Tiles,Dist,P2,true,Sp1),Dist @=< 0, string_concat("won by ",P2,State),Out =.. [state,State].
 is_won(_,_,_,Out) :- Out =.. [state,undecided].
 
 /**
