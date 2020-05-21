@@ -1,0 +1,14 @@
+[Unit]
+Description=Hex Doc Server
+
+[Service]
+EnvironmentFile=-/etc/default/hex_doc
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=hex_doc
+ExecStart=/hex/src/docserver.sh
+WorkingDirectory=/hex/src/
+
+[Install]
+WantedBy=multi-user.target
