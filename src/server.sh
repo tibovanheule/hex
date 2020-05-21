@@ -16,6 +16,8 @@
 :- use_module(library(http/http_client)).
 :- use_module(parser).
 :- use_module(write).
+:- use_module(ai).
+:- use_module(game).
 
 :- initialization(http_daemon, main).
 
