@@ -53,7 +53,7 @@ svg_handler(Request) :-
   asserta(GameBoard),
   bestmove(GameBoard,3,Move),
   update_board(GameBoard,Move,NewBoard),
-  write_svg(NewBoard),
+  write_svg(NewBoard,0),
   format('Content-type: image/svg+xml~n~n', []).
 svg_handler(Request) :-
   \+ member(method(post), Request), !,
