@@ -158,3 +158,4 @@ color(aquamarine).
 color(aqua).
 color(antiquewhite).
 color(aliceblue).
+color('SandyBrown').

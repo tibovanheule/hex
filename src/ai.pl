@@ -1,4 +1,4 @@
-:- module(ai,[bestmove/2])
+:- module(ai,[bestmove/3]).
 /** <module> AI
 Zoekt de beste mogelijke zet voor een gegeven bord
 
@@ -6,6 +6,8 @@ Zoekt de beste mogelijke zet voor een gegeven bord
 
 */
 :- use_module(game).
+:- use_module(dijkstra).
+:- use_module(library(lists)).
 
 
 /**
@@ -13,15 +15,31 @@ Zoekt de beste mogelijke zet voor een gegeven bord
  *
  * berkent een score voor een nieuw bord.
  */
-calculate_score(_,A) :- A = 0.
+calculate_score(Tiles,Score) :- get_size(size(W,H)),get_turn(turn(T)),get_orientation(orientation(P1,_)), P1 == T, Sp1 is H + 1, numlist(0,W,L1), get_player_score(L1,P1,Sp1,0/(-1),H,Tiles, Score).
+calculate_score(Tiles,Score) :- get_size(size(W,H)),get_turn(turn(T)),get_orientation(orientation(_,P2)), P2 == T, Sp2 is W+1, numlist(0,H,L2), get_player_score(L2,P2,Sp2,(-1)/0,W,Tiles, Score).
+
+get_player_score(L,P,Sp1,To,Dir,Tiles,Score) :- convlist([X,Dist]>>(get_dist(X/Sp1,To,Tiles,Dist,P,true,Dir)),L,O), min_list(O,Score).
+
+:- dynamic score/2.
+score([],0).
 
 /**
  * cache_score(-Arg:board,-Arg:int).
  *
  * Kijk in de prolog database als een bord al een vroeger berkent score heeft, anders bereken die.
  */
-cache_score(game(_,_,_,Tiles,_,-),S) :- sort(Tiles,Id),score(ID,S).
-cache_score(Board,S) :- calculate_score(Board,S),add_to_cache(Board,S).
+cache_score(game(_,_,_,tiles(Tiles),_,_),S) :- sort(Tiles,Id),score(Id,S).
+cache_score(game(_,_,_,tiles(Tiles),_,_),S) :- calculate_score(Tiles,S),add_to_cache(Tiles,S).
+
+/**
+ * add_to_cache(-Arg:Tiles,-Arg:Int).
+ *
+ * Zoekt de best mogelijke move,
+ * @Arg Board spelbord
+ * @Arg Depth maximum diepte van de spelboom
+ */
+add_to_cache(Tiles,S) :- sort(Tiles,Id), X =.. [score,Id,S],asserta(X).
+
 
 /**
  * bestmove(-Arg:board,-Arg:int).
@@ -30,36 +48,29 @@ cache_score(Board,S) :- calculate_score(Board,S),add_to_cache(Board,S).
  * @Arg Board spelbord
  * @Arg Depth maximum diepte van de spelboom
  */
-add_to_cache(game(_,_,_,Tiles,_,_),S) :- sort(Tiles,Id), X =.. [score,Id,S],asserta(X).
-
-
-/**
- * board_is_full(-Arg:board).
- *
- * bekijkt als er nog mogelijke zetten zijn of het bord vol is.
- */
-board_is_full(game(S,_,_,Tiles,_,_)) :- free(S,Tiles,L), length(L,0).
-
-/**
- * bestmove(-Arg:board,-Arg:int).
- *
- * Zoekt de best mogelijke move,
- * @Arg Board spelbord
- * @Arg Depth maximum diepte van de spelboom
- */
-bestmove(Board,Depth,Move) :- boom(Board,Depth,Alpha,Beta,true,Move).
+bestmove(Board,Depth,Move) :- get_tiles(T),get_size(S),free(T,S,L),best(L, Move,Board,true,_, Depth).
 
 /**
  * boom(-Arg:board,-Arg:int).
  *
  */
-boom(Board,_,_,_,S,_,Best) :- board_is_full(Board),!,score(S). % geen zetten meer mogelijk
-boom(Board,0,_,_,S,_,Best) :- !, score(Board,S). % gewenste diepte bereikt, bereken score
-boom(game(S,T,N,Tiles,State,Or),Depth,Alpha,Beta,Best,true,Best) :- free(S,Tiles,L), max_recursion(Board,Depth,Beta,Alpha,L,Best).
-boom(game(S,T,N,Tiles,State,Or),Depth,Alpha,Beta,Best,false,Best) :- free(S,Tiles,L), min_recursion(Board,Depth,Beta,Alpha,L,Best).
+boom(_,_,Depth,_,Board,Val):- Depth @=< 0,!, cache_score(Board,Val).
+boom(Pos,Maximizing,Depth,Move,Board,Val) :- update_board(Board,Pos,NewBoard),moves(NewBoard,Moves),best(Moves,Move,NewBoard,Maximizing,Val,Depth).
+boom(_,_,_,_,Board,Val):- cache_score(Board,Val).
 
-max_recursion(_,_,Beta,Alpha,_,Best) :- Beta <= Alpha,!.
-max_recursion(_,_,Beta,Alpha,[],Best) :- !.
-max_recursion(Board,Depth,Beta,Alpha,[H|T],Best) :-  update_board(Board,H), Dnew is Depth - 1, boom(Board,Dnew,Alpha,Beta,false), max_recursion(Board,Depth,Beta,Alpha,T,max())
-                    bestValue = max(bestValue, alphaBetaPrunedMiniMax(board: updatedBoard, maximizingPlayer: false, depth: depth-1, alpha: alpha, beta: beta))
-                    alpha = max(alpha, bestValue)
+moves(game(Size,_,_,Tiles,_,_),Moves) :- free(Tiles,Size,L),length(L,Len),Len>0,Moves = L.
+
+best([Pos], Pos,Board,Maximizing,Val, Depth) :-
+    NDepth is Depth -1,
+    boom(Pos,\+ Maximizing,NDepth,_,Board,Val), !.
+
+best([Pos1 | PosList], BestPos,Board,Maximizing, BestVal,Depth) :-
+    NDepth is Depth - 1,
+    boom(Pos1,\+ Maximizing,NDepth,_,Board,Val1),
+    best(PosList, Pos2,Board, \+ Maximizing, Val2,NDepth),
+    betterOf(Pos1, Val1, Pos2, Val2, BestPos, BestVal, Maximizing).
+
+
+betterOf(Pos0, Val0, _, Val1, Pos0, Val0,false) :- Val0 > Val1, !.
+betterOf(Pos0, Val0, _, Val1, Pos0, Val0,true) :- Val0 < Val1, !.
+betterOf(_, _, Pos1, Val1, Pos1, Val1,_).

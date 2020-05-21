@@ -1,37 +1,17 @@
-size: 11 * 11
-turn: red
-tiles: 32
-    (B1) -> red
-    (A6) -> blue
-    (D4) -> red
-    (B2) -> red
-    (B3) -> red
-    (B8) -> blue
-    (B6) -> blue
-    (E6) -> blue
-    (C4) -> red
-    (C8) -> blue
-    (B7) -> blue
-    (D7) -> blue
-    (C5) -> red
-    (D5) -> red
-    (C3) -> red
-    (D6) -> red
-    (E7) -> red
-    (G9) -> red
-    (F5) -> blue
-    (I7) -> blue
-    (H4) -> blue
-    (E11) -> red
-    (K6) -> blue
-    (F7) -> red
-    (I6) -> blue
-    (G4) -> blue
-    (G7) -> red
-    (F10) -> red
-    (G8) -> red
-    (J7) -> blue
-    (I4) -> blue
-    (I5) -> blue
-state: won by blue
-orientation: red * blue
+tiles: 12
+          (B3) -> lime
+          (A3) -> lime
+          (C3) -> lime
+          (D4) -> SandyBrown
+          (E3) -> lime
+          (D5) -> SandyBrown
+          (F1) -> SandyBrown
+          (F3) -> lime
+          (I2) -> lime
+          (E2) -> SandyBrown
+          (H2) -> lime
+          (J2) -> lime
+      orientation: SandyBrown * lime
+      turn: lime
+      size: 10 * 5
+      state: undecided
