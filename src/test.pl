@@ -21,8 +21,8 @@ test(Board) :- get_tiles(T),get_size(S),free(T,S,L),nl,test_iter(Board,L),halt(0
  *
  * Iterates over a list of moves, print the board in text form with appropieate seperator
  */
-test_iter(Board,[L]) :- update_board(Board,L,NewBoard),test_write_board(NewBoard).
-test_iter(Board,[H|L]) :- update_board(Board,H,NewBoard),test_write_board(NewBoard),write("~"),nl,test_iter(Board,L).
+test_iter(Board,[L]) :- update_board(Board,L,NewBoard),write_board(NewBoard).
+test_iter(Board,[H|L]) :- update_board(Board,H,NewBoard),write_board(NewBoard),write("~"),nl,test_iter(Board,L).
 
 
 /**

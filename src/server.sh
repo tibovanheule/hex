@@ -34,7 +34,9 @@ move_handler(Request) :-
   http_read_data(Request, Data, []),
   open_string(Data, Stream),
   parse_server(Stream, Game),
-  json_write_board(Game, Json),
+  bestmove(Game,3,Move),
+  update_board(Game,Move,NewBoard),
+  json_write_board(NewBoard, Json),
   reply_json_dict(Json).
 move_handler(Request) :-
   \+ member(method(post), Request), !,
@@ -45,6 +47,8 @@ svg_handler(Request) :-
   http_read_data(Request, Data, []),
   open_string(Data, Stream),
   parse_server(Stream, Game),
+  bestmove(Game,3,Move),
+  update_board(Game,Move,NewBoard),
   write_svg(Game, Svg),
   format('Content-type: image/svg+xml~n~n', []),
   write(Svg).

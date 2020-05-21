@@ -22,6 +22,11 @@ parse(_) :-
     write("Failed to parse."),
     halt(4).
 
+    /**
+     * parse_server(-Arg:Stream,-Arg:Game)
+     *
+     * gets an external stream and applies the grmmar, gives back an game.
+     */
 parse_server(Stream,Retval) :- phrase_from_stream(gram(Retval), Stream).
 parse_server(_,Retval) :- Retval = "Failed to parse.",!.
 
