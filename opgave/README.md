@@ -318,35 +318,9 @@ de functionele eisen van het project.
   Projecten die niet testbaar zijn met deze automatische test zullen **automatisch**
   **als onontvankelijk verklaard** worden.
 
-# Verslag
 
-We verwachten een bondig verslag die de algemene oplossingsstrategie van je spel
-beschrijft. Voeg aan je verslag je code toe met lijnnummers, zodat je in de
-uitleg van je verslag kan verwijzen naar de relevante delen van je code. Je bent
-zelf vrij hoe je dit verslag organiseert, maar we verwachten op zijn minst de
-volgende onderdelen:
-
-- Inleiding
-- Interne bord voorstelling
-- Algoritme (met kort voorbeeld)
-- Conclusie (wat heb je gerealiseerd en wat beter kan)
-
-# Checklist
-
-Je project is veel meer dan alleen maar de code van de AI, hieronder een
-checklist om na te gaan of je alle onderdelen hebt afgewerkt.
-
-- [ ] Con-tac-tix implementatie
-- [ ] Code documentatie
 - [ ] Testcode (bijvoorbeeld PlUnit)
-- [ ] Test functionaliteit (het TEST argument)
 - [ ] Verslag
-- [ ] Alles pushen naar `master` op
-      `git@subgit.ugent.be:2019-2020/LP/{studentnr}`
-
-# Indienen
-
-## Bestandenstructuur
 
 Je project moet volgende structuur hebben:
 

@@ -4,16 +4,11 @@ functionaliteit te voorzien.
   - [nearly done] react
   - react native
 
-
 ## Basis werking
-
-Als het programma wordt uitgevoerd zonder argumenten:
-- zoek je naar de beste volgende zet.
 
 - Je code moet **getest** zijn, dit wil zeggen dat je voor elk van de bewegingen
   zelf een test schrijft, zodat je zeker bent dat de basis functionaliteit
   werkt.
-- [ ] Con-tac-tix implementatie
 - [ ] Testcode (bijvoorbeeld PlUnit)
 - [ ] Verslag
 - [ ] Alles pushen naar `master` op
